@@ -588,7 +588,17 @@ Reglas estrictas:
         })
       });
       const data = await res.json();
-      const reply = data.content.map(b => b.text || '').join('');
+      let reply = '';
+
+if (data.content && Array.isArray(data.content)) {
+  reply = data.content.map(b => b.text || '').join('');
+} else if (data.error) {
+  reply = 'Error: ' + data.error;
+} else {
+  reply = 'No hubo respuesta';
+}
+
+console.log('RESPUESTA API:', data);
       rnMsgs.push({ role: 'assistant', content: reply });
       loader.remove();
       if (reply.includes('[WA_BUTTON]')) {
