@@ -30,12 +30,10 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     if (!response.ok) {
-      return res.status(response.status).json({
-        error: 'Gemini request failed',
-        details: data
-      });
-    }
-
+  return res.status(response.status).json({
+    error: 'Gemini request failed: ' + JSON.stringify(data)
+  });
+}
     const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (!text) {
