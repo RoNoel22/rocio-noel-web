@@ -579,7 +579,7 @@ Reglas estrictas:
     rnBusy = true;
     const loader = rnAddMsg('Analizando...', 'bot load');
     try {
-      const res = await fetch('/api/chat', {
+      const res = await fetch('https://rocio-noel-iiik55wpu-ronoel22s-projects.vercel.app/api/chat', {
         method: 'POST',
   headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
