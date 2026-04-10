@@ -270,7 +270,7 @@
             </p>
           </div>
 
-          <form action="/api/form" method="POST" enctype="multipart/form-data">
+          <form id="contactForm" action="/api/form" method="POST" enctype="multipart/form-data">
             <div class="mb-3">
               <label for="email" class="form-label">Correo electrónico</label>
               <input type="email" class="form-control custom-input" id="email" placeholder="nombre@email.com">
@@ -638,6 +638,44 @@ console.log('RESPUESTA API:', data);
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); rnSend(); }
   });
 })();
+</script>
+
+<script>
+  const form = document.getElementById('contactForm');
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalText = submitButton.textContent;
+
+    submitButton.disabled = true;
+    submitButton.textContent = 'Enviando...';
+
+    try {
+      const formData = new FormData(form);
+
+      const response = await fetch('/api/form', {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert('Tu información fue enviada correctamente.');
+        form.reset();
+      } else {
+        alert(data.error || 'Hubo un problema al enviar el formulario.');
+      }
+    } catch (error) {
+      alert('Error de conexión al enviar el formulario.');
+      console.error(error);
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = originalText;
+    }
+  });
 </script>
 
     </body>
