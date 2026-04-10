@@ -30,6 +30,15 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     if (!response.ok) {
+  const status = data?.error?.status;
+  const message = data?.error?.message || '';
+
+  if (response.status === 503 || status === 'UNAVAILABLE') {
+    return res.status(503).json({
+      error: 'En este momento el asistente está con mucha demanda. Probá de nuevo en unos segundos.'
+    });
+  }
+
   return res.status(response.status).json({
     error: 'Gemini request failed: ' + JSON.stringify(data)
   });
