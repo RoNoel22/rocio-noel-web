@@ -270,7 +270,7 @@
             </p>
           </div>
 
-          <form>
+          <form action="/api/form" method="POST" enctype="multipart/form-data">
             <div class="mb-3">
               <label for="email" class="form-label">Correo electrónico</label>
               <input type="email" class="form-control custom-input" id="email" placeholder="nombre@email.com">
@@ -279,7 +279,7 @@
             <div class="mb-3">
               <label for="serviceType" class="form-label">Servicio</label>
               <select class="form-select custom-input" id="serviceType">
-                <option selected disabled>Seleccionar opción</option>
+                <option selected disabled value="">Seleccionar opción</option>
                 <option>Análisis express. Monto $10.000</option>
                 <option>CV profesional. Monto $70.000</option>
                 <option>Optimización de LinkedIn. Monto $30.000</option>
@@ -342,8 +342,6 @@
     </div>
   </div>
 </section>
-
-
 
         <!-- Testimonials-->
 <section class="testimonials text-center bg-light py-5">
