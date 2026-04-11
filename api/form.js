@@ -28,7 +28,7 @@ module.exports = async function handler(req, res) {
       },
       body: JSON.stringify({
         from: 'Rocio <info@cvprofesional.com.ar>',
-        to:['noelasesora@hotmail.com'],
+        to: ['noelasesora@hotmail.com'],
         reply_to: email,
         subject: `Nueva solicitud web - ${serviceType}`,
         html: `
