@@ -48,6 +48,9 @@ module.exports = async function handler(req, res) {
       objective = parsed.objective;
     }
 
+    console.log('EMAIL:', email);
+    console.log('ATTACHMENTS:', attachments.length);
+    console.log('CONTENT-TYPE:', contentType);
     if (!email || !serviceType) {
       return res.status(400).json({ error: 'Faltan campos obligatorios' });
     }
