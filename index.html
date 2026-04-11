@@ -652,11 +652,38 @@ console.log('RESPUESTA API:', data);
     submitButton.textContent = 'Enviando...';
 
     try {
-      const payload = {
-        email: document.getElementById('email').value,
-        serviceType: document.getElementById('serviceType').value,
-        objective: document.getElementById('objective').value
-      };
+  const formData = new FormData();
+  formData.append('email', document.getElementById('email').value);
+  formData.append('serviceType', document.getElementById('serviceType').value);
+  formData.append('objective', document.getElementById('objective').value);
+
+  const cvFile = document.getElementById('cvFile').files[0];
+  const paymentFile = document.getElementById('paymentFile').files[0];
+  if (cvFile) formData.append('cv', cvFile);
+  if (paymentFile) formData.append('comprobante', paymentFile);
+
+  const response = await fetch('/api/form', {
+    method: 'POST',
+    body: formData
+  });
+
+  const text = await response.text();
+  let data = {};
+  try { data = JSON.parse(text); } catch { data = { error: text }; }
+
+  if (response.ok) {
+    alert('Tu información fue enviada correctamente.');
+    form.reset();
+  } else {
+    alert(data.error || 'Hubo un problema al enviar el formulario.');
+  }
+} catch (error) {
+  alert('Error de conexión al enviar el formulario.');
+  console.error(error);
+} finally {
+  submitButton.disabled = false;
+  submitButton.textContent = originalText;
+}
 
       const response = await fetch('/api/form', {
         method: 'POST',
