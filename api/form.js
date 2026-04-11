@@ -16,10 +16,10 @@ export default async function handler(req, res) {
       });
     }
 
-    const { data, error } = await resend.emails.send({
+    const result = await resend.emails.send({
       from: process.env.RESEND_FROM || 'Rocio <onboarding@resend.dev>',
       to: ['noelasesora@hotmail.com'],
-      reply_to: email,
+      replyTo: email,
       subject: `Nueva solicitud web - ${serviceType}`,
       html: `
         <h2>Nueva solicitud desde la web</h2>
@@ -29,22 +29,23 @@ export default async function handler(req, res) {
       `,
     });
 
-    if (error) {
-      console.error('Error Resend:', error);
+    console.log('RESEND RESULT:', result);
+
+    if (result.error) {
       return res.status(500).json({
-        error: 'No se pudo enviar el email',
+        error: result.error.message || 'No se pudo enviar el email',
       });
     }
 
     return res.status(200).json({
       ok: true,
       message: 'Formulario enviado correctamente',
-      id: data?.id,
+      id: result.data?.id,
     });
   } catch (error) {
-    console.error('Error en /api/form:', error);
+    console.error('ERROR EN /api/form:', error);
     return res.status(500).json({
-      error: 'Error en el servidor',
+      error: error.message || 'Error en el servidor',
     });
   }
 }
