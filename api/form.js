@@ -1,51 +1,55 @@
-import { Resend } from 'resend';
+const https = require('https');
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+module.exports = async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
-    const { email, serviceType, objective } = req.body || {};
+    let body = req.body;
+    if (typeof body === 'string') {
+      try { body = JSON.parse(body); } catch {}
+    }
+
+    const { email, serviceType, objective } = body || {};
 
     if (!email || !serviceType) {
-      return res.status(400).json({
-        error: 'Faltan campos obligatorios',
-      });
+      return res.status(400).json({ error: 'Faltan campos obligatorios' });
     }
 
-    const result = await resend.emails.send({
-      from: process.env.RESEND_FROM || 'Rocio <onboarding@resend.dev>',
-      to: ['noelasesora@hotmail.com'],
-      replyTo: email,
-      subject: `Nueva solicitud web - ${serviceType}`,
-      html: `
-        <h2>Nueva solicitud desde la web</h2>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Servicio:</strong> ${serviceType}</p>
-        <p><strong>Objetivo:</strong> ${objective || 'No indicado'}</p>
-      `,
+    const resendResponse = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: 'Rocio <info@cvprofesional.com.ar>',
+        to: ['noelasesora@hotmail.com'],
+        reply_to: email,
+        subject: `Nueva solicitud web - ${serviceType}`,
+        html: `
+          <h2>Nueva solicitud desde la web</h2>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Servicio:</strong> ${serviceType}</p>
+          <p><strong>Objetivo/Puesto:</strong> ${objective || 'No indicado'}</p>
+        `,
+      }),
     });
 
-    console.log('RESEND RESULT:', result);
+    const data = await resendResponse.json();
 
-    if (result.error) {
-      return res.status(500).json({
-        error: result.error.message || 'No se pudo enviar el email',
-      });
+    if (!resendResponse.ok) {
+      return res.status(500).json({ error: data.message || 'Error al enviar' });
     }
 
-    return res.status(200).json({
-      ok: true,
-      message: 'Formulario enviado correctamente',
-      id: result.data?.id,
-    });
+    return res.status(200).json({ ok: true, message: 'Formulario enviado correctamente' });
+
   } catch (error) {
-    console.error('ERROR EN /api/form:', error);
-    return res.status(500).json({
-      error: error.message || 'Error en el servidor',
-    });
+    console.error('ERROR:', error);
+    return res.status(500).json({ error: error.message || 'Error en el servidor' });
   }
-}
+};
