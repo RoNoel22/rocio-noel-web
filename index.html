@@ -648,33 +648,29 @@ console.log('RESPUESTA API:', data);
 
     const submitButton = form.querySelector('button[type="submit"]');
     const originalText = submitButton.textContent;
-
     submitButton.disabled = true;
     submitButton.textContent = 'Enviando...';
 
     try {
-      const payload = {
-        email: document.getElementById('email').value,
-        serviceType: document.getElementById('serviceType').value,
-        objective: document.getElementById('objective').value
-      };
+      const formData = new FormData();
+      formData.append('email', document.getElementById('email').value);
+      formData.append('serviceType', document.getElementById('serviceType').value);
+      formData.append('objective', document.getElementById('objective').value);
+
+      const cvFile = document.getElementById('cvFile').files[0];         // ✅ cvFile
+      const comprobanteFile = document.getElementById('paymentFile').files[0]; // ✅ paymentFile
+
+      if (cvFile) formData.append('cv', cvFile);
+      if (comprobanteFile) formData.append('comprobante', comprobanteFile);
 
       const response = await fetch('/api/form', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
+        body: formData
       });
 
       const text = await response.text();
       let data = {};
-
-      try {
-        data = JSON.parse(text);
-      } catch {
-        data = { error: text };
-      }
+      try { data = JSON.parse(text); } catch { data = { error: text }; }
 
       if (response.ok) {
         alert('Tu información fue enviada correctamente.');
