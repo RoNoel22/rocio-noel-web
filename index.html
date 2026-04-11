@@ -652,20 +652,16 @@ console.log('RESPUESTA API:', data);
     submitButton.textContent = 'Enviando...';
 
     try {
-      const formData = new FormData();
-      formData.append('email', document.getElementById('email').value);
-      formData.append('serviceType', document.getElementById('serviceType').value);
-      formData.append('objective', document.getElementById('objective').value);
-
-      const cvFile = document.getElementById('cvFile').files[0];         // ✅ cvFile
-      const comprobanteFile = document.getElementById('paymentFile').files[0]; // ✅ paymentFile
-
-      if (cvFile) formData.append('cv', cvFile);
-      if (comprobanteFile) formData.append('comprobante', comprobanteFile);
+      const payload = {
+        email: document.getElementById('email').value,
+        serviceType: document.getElementById('serviceType').value,
+        objective: document.getElementById('objective').value
+      };
 
       const response = await fetch('/api/form', {
         method: 'POST',
-        body: formData
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
       });
 
       const text = await response.text();
