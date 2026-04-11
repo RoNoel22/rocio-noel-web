@@ -653,11 +653,18 @@ console.log('RESPUESTA API:', data);
     submitButton.textContent = 'Enviando...';
 
     try {
-      const formData = new FormData(form);
+      const payload = {
+        email: document.getElementById('email').value,
+        serviceType: document.getElementById('serviceType').value,
+        objective: document.getElementById('objective').value
+      };
 
       const response = await fetch('/api/form', {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
       });
 
       const data = await response.json();
