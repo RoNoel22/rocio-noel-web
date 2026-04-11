@@ -1,11 +1,5 @@
-import { IncomingForm } from 'formidable';
+import formidable from 'formidable';
 import fs from 'fs';
-
-export const config = {
-  api: {
-    bodyParser: false, // ✅ Necesario para recibir archivos
-  },
-};
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -16,9 +10,8 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
-    // ✅ Parsear el FormData con formidable
     const { fields, files } = await new Promise((resolve, reject) => {
-      const form = new IncomingForm({ multiples: true, maxFileSize: 10 * 1024 * 1024 });
+      const form = formidable({ multiples: true, maxFileSize: 10 * 1024 * 1024 });
       form.parse(req, (err, fields, files) => {
         if (err) reject(err);
         else resolve({ fields, files });
@@ -33,7 +26,6 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Faltan campos obligatorios' });
     }
 
-    // ✅ Convertir archivos a base64 para adjuntarlos
     const attachments = [];
 
     if (files.cv) {
@@ -54,7 +46,6 @@ export default async function handler(req, res) {
       });
     }
 
-    // ✅ Enviar con Resend via fetch directo (sin paquete npm)
     const body = {
       from: 'Rocio <onboarding@resend.dev>',
       to: ['noelasesora@hotmail.com'],
@@ -64,33 +55,4 @@ export default async function handler(req, res) {
         <h2>Nueva solicitud desde la web</h2>
         <p><strong>Email:</strong> ${email}</p>
         <p><strong>Servicio:</strong> ${serviceType}</p>
-        <p><strong>Objetivo/Puesto:</strong> ${objective || 'No indicado'}</p>
-      `,
-    };
-
-    if (attachments.length > 0) {
-      body.attachments = attachments;
-    }
-
-    const resendResponse = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    });
-
-    const data = await resendResponse.json();
-
-    if (!resendResponse.ok) {
-      return res.status(500).json({ error: data.message || 'Error al enviar' });
-    }
-
-    return res.status(200).json({ ok: true, message: 'Formulario enviado correctamente' });
-
-  } catch (error) {
-    console.error('ERROR EN /api/form:', error);
-    return res.status(500).json({ error: error.message || 'Error en el servidor' });
-  }
-}
+        <p><strong>Objetivo/Puesto:</strong> ${objective || 'No indic
