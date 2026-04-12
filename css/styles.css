@@ -12803,7 +12803,7 @@ bottom: 5px;
 }
 @media (max-width: 991.98px) {
   .hero__v6 {
-    padding-top: 20px !important;
+    padding-top: 10px !important;
     margin-top: 0 !important;
   }
 
@@ -12838,4 +12838,24 @@ bottom: 5px;
   body {
     padding-top: 60px !important;
   }
+}
+#mainNav .container {
+  flex-wrap: nowrap;
+}
+
+#mainNav .logo-circle {
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+#mainNav .nav-link {
+  font-size: 0.8rem;
+  padding: 0;
+  white-space: nowrap;
+}
+
+#mainNav .btn {
+  font-size: 0.75rem;
+  padding: 0.3rem 0.6rem;
+  white-space: nowrap;
 }
