@@ -12870,3 +12870,22 @@ bottom: 5px;
     padding: 6px 12px !important;
   }
 }
+@media (max-width: 480px) {
+  .logo-circle {
+    font-size: 0.7rem !important;
+    padding: 4px 8px !important;
+  }
+  
+  #mainNav .nav-link {
+    font-size: 0.7rem !important;
+  }
+  
+  #mainNav .btn {
+    font-size: 0.65rem !important;
+    padding: 0.25rem 0.5rem !important;
+  }
+  
+  #mainNav .container {
+    gap: 8px !important;
+  }
+}
