@@ -12823,7 +12823,6 @@ bottom: 5px;
   }
 
   /* ... resto de estilos ... */
-
   body {
     padding-top: 80px !important;
   }
@@ -12832,4 +12831,7 @@ bottom: 5px;
   body {
     padding-top: 70px !important;
   }
+}
+.img-main {
+  filter: brightness(1.15) contrast(1.05);
 }
