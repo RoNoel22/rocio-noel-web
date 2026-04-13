@@ -13089,3 +13089,14 @@ background-repeat: no-repeat;
   margin-bottom: 14px;
   line-height: 1.35;
   }
+
+.custom-about-img-wrap {
+  overflow: hidden;
+  border-top-right-radius: 60px;
+  border-bottom-right-radius: 60px;
+}
+.custom-about-img-wrap {
+  overflow: hidden;
+  border-top-right-radius: 40px;
+  border-bottom-right-radius: 40px;
+}
